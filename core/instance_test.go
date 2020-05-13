@@ -404,6 +404,16 @@ func TestIsClassCompatible(t *testing.T) {
 			},
 			instanceCPU:    5,
 			instanceMemory: 1.0,
+			expected:       false,
+		},
+		{name: "Spot is same in CPU and higher in memory",
+			spotInfo: instanceTypeInformation{
+				vCPU:              5,
+				memory:            2.5,
+				PhysicalProcessor: "Intel",
+			},
+			instanceCPU:    5,
+			instanceMemory: 1.0,
 			expected:       true,
 		},
 		{name: "Spot is lower in CPU but higher in memory",
@@ -449,9 +459,9 @@ func TestIsClassCompatible(t *testing.T) {
 			expected:       false,
 		},
 
-		{name: "Spot is higher in CPU, memory and GPU ",
+		{name: "Spot is same in CPU and higher in memory and GPU ",
 			spotInfo: instanceTypeInformation{
-				vCPU:              10,
+				vCPU:              8,
 				memory:            20,
 				GPU:               4,
 				PhysicalProcessor: "Intel",

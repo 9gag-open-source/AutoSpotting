@@ -234,7 +234,7 @@ func (i *instance) isClassCompatible(spotCandidate instanceTypeInformation) bool
 		" / ", current.memory, " / ", current.GPU)
 
 	if i.isSameArch(spotCandidate) &&
-		spotCandidate.vCPU >= current.vCPU &&
+		spotCandidate.vCPU == current.vCPU &&
 		spotCandidate.memory >= current.memory &&
 		spotCandidate.GPU >= current.GPU {
 		return true
