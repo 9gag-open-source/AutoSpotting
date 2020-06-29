@@ -753,6 +753,7 @@ func TestAttachSpotInstance(t *testing.T) {
 				services: connections{
 					autoScaling: mockASG{aierr: nil},
 				},
+				conf: &Config{},
 			},
 			instanceID: "1",
 			expected:   nil,
@@ -763,6 +764,7 @@ func TestAttachSpotInstance(t *testing.T) {
 				services: connections{
 					autoScaling: mockASG{aierr: errors.New("attach")},
 				},
+				conf: &Config{},
 			},
 			instanceID: "1",
 			expected:   errors.New("attach"),

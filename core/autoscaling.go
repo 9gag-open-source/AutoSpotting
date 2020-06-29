@@ -445,6 +445,10 @@ func (a *autoScalingGroup) attachSpotInstance(spotInstanceID string) error {
 		logger.Println(resp)
 		return err
 	}
+
+	// Wait for LB registration
+	time.Sleep(60 * time.Second * a.region.conf.SleepMultiplier)
+
 	return nil
 }
 
@@ -473,7 +477,7 @@ func (a *autoScalingGroup) detachAndTerminateOnDemandInstance(
 	}
 
 	// Wait till detachment initialize is complete before terminate instance
-	time.Sleep(20 * time.Second * a.region.conf.SleepMultiplier)
+	time.Sleep(30 * time.Second * a.region.conf.SleepMultiplier)
 
 	return a.instances.get(*instanceID).terminate()
 }
