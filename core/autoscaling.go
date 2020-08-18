@@ -118,6 +118,26 @@ func (a *autoScalingGroup) licensedToRun() (bool, error) {
 	return true, nil
 }
 
+func (a *autoScalingGroup) getAvailabilityZoneWithLeastInstances() string {
+	var az string
+	min := 99999
+	m := make(map[string]int)
+
+	for i := range a.instances.instances() {
+		az := i.Placement.AvailabilityZone
+		m[*az] += 1
+	}
+
+	for k, v := range m {
+		if v < min {
+			min = v
+			az = k
+		}
+	}
+
+	return az
+}
+
 func (a *autoScalingGroup) process() {
 	var spotInstanceID string
 	a.scanInstances()
@@ -140,7 +160,10 @@ func (a *autoScalingGroup) process() {
 	if spotInstance == nil {
 		logger.Println("No spot instances were found for ", a.name)
 
-		onDemandInstance := a.getAnyUnprotectedOnDemandInstance()
+		az := a.getAvailabilityZoneWithLeastInstances()
+		logger.Println(a.name, "Checking on-demand instances in availability zone ", az)
+
+		onDemandInstance := a.getUnprotectedOnDemandInstanceInAZ(&az)
 
 		if onDemandInstance == nil {
 			logger.Println(a.region.name, a.name,
